@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins
+        version: 2.7.1
+    spec:
+      containers:
+      - name: jenkins-master
+        image: quay.io/jenknetes/master:2.7.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jenkins-persistent-storage
+          mountPath: /var/jenkins_home
+      volumes:
+      - name: jenkins-persistent-storage
+        gcePersistentDisk:
+          pdName: jenkins-persistent-storage
+          fsType: ext4
